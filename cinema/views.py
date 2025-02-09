@@ -1,5 +1,4 @@
 import datetime
-from re import S
 from django.db.models import Count, F
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination

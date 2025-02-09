@@ -125,15 +125,19 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         with transaction.atomic():
-            tickets = validated_data.pop("tickets")
-            order = Order.objects.create(**validated_data)
-            for ticket in tickets:
-                Ticket.objects.create(order=order, **ticket)
+            try:
+                tickets = validated_data.pop("tickets")
+                order = Order.objects.create(**validated_data)
+                for ticket in tickets:
+                    Ticket.objects.create(order=order, **ticket)
+            except Exception as e:
+                raise serializers.ValidationError(
+                    f"Error creating order: {e}"
+                )
         return order
 
     class Meta:
         model = Order
-
         fields = ("id", "created_at", "tickets")
 
 
